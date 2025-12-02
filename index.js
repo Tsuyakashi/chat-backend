@@ -8,7 +8,7 @@ chat.use(express.urlencoded({ extended: true }));
 chat.use(express.json());
 
 chat.use('/', require('./routes/api/chats'));
-
+chat.use('/openai/', require('./routes/api/openAi'))
 
 const MONGO_URI = process.env.MONGO_URI
 

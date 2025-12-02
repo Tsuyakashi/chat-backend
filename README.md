@@ -18,6 +18,7 @@ docker run -d --name my-mongo-database -p 27017:27017 mongo
 ```bash
 node index.js
 ```
+<!-- ### Also able run with `docker compose up -d` -->
 
 # Used:
 - NodeJS + npm:
@@ -32,6 +33,7 @@ node index.js
 - Create chat `/chats` (POST)
 - Show chat history `/:id` (GET)
 - Delete chat `/:id` (DELETE)
+- Send to model '/openai/' (POST)
 ### Soon:
 - Sent to chat `/chat/send` (POST)
 
