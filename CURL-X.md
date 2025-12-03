@@ -22,3 +22,10 @@ curl -X DELETE \
     -H "Content-Type: application/json" \
     localhost:3000/:id
 ```
+Send to chat by id:
+```bash
+curl -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"messages": [{"role": "user", "content": "Привет!"}]}' \
+    http://localhost:3000/chat/:id/send
+```
