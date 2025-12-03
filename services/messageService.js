@@ -1,5 +1,5 @@
 const chatService = require('./chatService');
-const openAiService =require('./openAiService');
+const openAiService = require('./openAiService');
 const maxMessages = parseInt(process.env.MAX_MESSAGES_LIMIT) || 25;
 
 class MessageService {

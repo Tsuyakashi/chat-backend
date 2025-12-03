@@ -22,6 +22,7 @@ npm start
 # .env
 ```env
 OPENAI_API_KEY="sk-proj-********"
+CHAT_GPT_MODEL='gpt-5-mini'
 MONGO_URI=mongodb://localhost:27017/chat
 MAX_MESSAGES_LIMIT=25
 ```
