@@ -35,6 +35,8 @@ node index.js
 - Delete chat `/:id` (DELETE)
 - Sent to chat `/chat/:id/send` (POST)
 
+### For curl examples check `./CURL-X.md`
+
 # mongoose schema:
 ```
 userId: { type: String, required: true },
