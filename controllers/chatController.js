@@ -15,7 +15,7 @@ class ChatController {
     async createChat(req, res) {
         try {
             const chat = await chatService.createChat(req.body);
-            res.status(201).json(chat);
+            res.status(201).json(chat._id);
         } catch (err) {
             res.status(400).json({ message: 'Bad request', error: err });
         }
