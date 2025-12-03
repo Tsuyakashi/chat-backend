@@ -1,6 +1,6 @@
 const chatService = require('../services/chatService');
 const openAiService = require('../services/openAiService');
-
+const maxMessages = parseInt(process.env.MAX_MESSAGES_LIMIT) || 25;
 
 class ChatController {
     async getAllChats(req, res) {
@@ -50,12 +50,16 @@ class ChatController {
             if (!chat) return res.status(404).json({ message: 'Chat not found' });
             // making messages massive for ai request
             const allMessages = [
-                ...(chat.systemPrompt ? [{ role: "system", content: chat.systemPrompt }] : []),
                 ...chat.messages.map(message => ({ role: message.role, content: message.content })),
                 ...messages
             ];
+            const messagesToSend = [
+                ...(chat.systemPrompt ? [{ role: "system", content: chat.systemPrompt }] : []),
+                ...allMessages.slice(-maxMessages)
+            ];
+
             // getting response
-            const aiMessage = await openAiService.getResponse({ messages: allMessages });
+            const aiMessage = await openAiService.getResponse({ messages: messagesToSend });
             // updating messages history
             await chatService.appendMessages(req.params.id, [
                 ...messages,
