@@ -1,4 +1,6 @@
 const chatService = require('../services/chatService');
+const openAiService = require('../services/openAiService');
+
 
 class ChatController {
     async getAllChats(req, res) {
@@ -36,6 +38,33 @@ class ChatController {
             res.json({ message: 'Deleted successfully' });
         } catch (err) {
             res.status(500).json({ message: 'Server error', error: err });
+        }
+    }
+
+    async sendToChat (req, res) {
+        try {
+            // massive of messages sent by user
+            const { messages } = req.body;
+            // getting older messages from history
+            const chat = await chatService.getChatHistory(req.params.id);
+            if (!chat) return res.status(404).json({ message: 'Chat not found' });
+            // making messages massive for ai request
+            const allMessages = [
+                ...(chat.systemPrompt ? [{ role: "system", content: chat.systemPrompt }] : []),
+                ...chat.messages.map(message => ({ role: message.role, content: message.content })),
+                ...messages
+            ];
+            // getting response
+            const aiMessage = await openAiService.getResponse({ messages: allMessages });
+            // updating messages history
+            await chatService.appendMessages(req.params.id, [
+                ...messages,
+                aiMessage.choices[0].message
+            ]);
+            // returning only answer to users
+            res.json(aiMessage.choices[0].message);
+        } catch (err) {
+            res.status(500).json({ message: 'An error occurred', error: err})
         }
     }
 }

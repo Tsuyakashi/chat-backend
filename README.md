@@ -33,20 +33,20 @@ node index.js
 - Create chat `/chats` (POST)
 - Show chat history `/:id` (GET)
 - Delete chat `/:id` (DELETE)
-- Send to model '/openai/' (POST)
-### Soon:
-- Sent to chat `/chat/send` (POST)
+- Sent to chat `/chat/:id/send` (POST)
 
 # mongoose schema:
 ```
 userId: { type: String, required: true },
-systemPrompt: String,
-chatHistory: [{
-    role: { type: String },
-    message: { type: String },
-    sentAt: { type: Date, default: Date.now }
-}],
-createdAt: { type: Date, default: Date.now }
+    systemPrompt: String,
+    messages: [
+        {
+            role: { type: String },
+            content: { type: String },
+            sentAt: { type: Date, default: Date.now }
+        }
+    ],
+    createdAt: { type: Date, default: Date.now }
 ```
 
 ### Node v24.11.1

@@ -8,13 +8,21 @@ class ChatService {
     async createChat(data){
         return Chats.create(data);
     }
-    
+
     async getChatHistory(id){
         return Chats.findById(id);
     }
 
     async deleteChat(id){
         return Chats.deleteOne({ _id: id });
+    }
+
+    async appendMessages(id, data) {
+        return Chats.findByIdAndUpdate(
+            id,
+            { $push: { messages: { $each: data } } },
+            { new: true }
+        );
     }
 }
 

@@ -4,7 +4,7 @@ class OpenAiService {
 
     async getResponse(data) {
         return await client.chat.completions.create({
-            model: 'gpt-5-mini',
+            model: 'gpt-4o',
             ...data
         });
     }
