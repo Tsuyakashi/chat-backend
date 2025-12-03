@@ -1,6 +1,5 @@
 const chatService = require('../services/chatService');
-const openAiService = require('../services/openAiService');
-const maxMessages = parseInt(process.env.MAX_MESSAGES_LIMIT) || 25;
+const messageService = require('../services/messageService');
 
 class ChatController {
     async getAllChats(req, res) {
@@ -41,33 +40,24 @@ class ChatController {
         }
     }
 
-    async sendToChat (req, res) {
+    async sendToChat(req, res) {
         try {
-            // message sent by user
-            const userMessage = req.body.message;
-            // getting older messages from history
-            const chat = await chatService.getChatHistory(req.params.id);
-            if (!chat) return res.status(404).json({ message: 'Chat not found' });
-            if (chat.userId !== req.body.userId) return res.status(403).json({ message: 'Wrong user id' });
-            // making messages massive for ai request
-            const messagesToSend = [
-                ...(chat.systemPrompt ? [{ role: "system", content: chat.systemPrompt }] : []),
-                ...chat.messages.map(message => ({ role: message.role, content: message.content })).slice(-(maxMessages-1)),
-                ...[{ role: "user", content: userMessage}]
-            ];
+            const { userId, message } = req.body;
+            const chatId = req.params.id;
 
-            // getting response
-            const aiMessage = await openAiService.getResponse({ messages: messagesToSend });
-            // updating messages history
-            await chatService.appendMessages(req.params.id, [
-                { role: "user", content: userMessage },
-                aiMessage.choices[0].message
-            ]);
-            // returning only answer to users
-            res.json(aiMessage.choices[0].message);
+            const assistantMessage = await messageService.sendMessage(chatId, userId, message);
+            res.json(assistantMessage);
         } catch (err) {
-            console.error('Error in sendToChat:', err); // Логирование в консоль
-            // Правильная сериализация ошибки
+            console.error('Error in sendToChat:', err);
+            
+            // Обработка разных типов ошибок
+            if (err.message === 'Chat not found') {
+                return res.status(404).json({ message: err.message });
+            }
+            if (err.message === 'Wrong user id') {
+                return res.status(403).json({ message: err.message });
+            }
+            
             const errorResponse = {
                 message: err.message || 'Unknown error',
                 ...(err.status && { status: err.status }),
