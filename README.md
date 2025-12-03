@@ -9,22 +9,28 @@ git clone git@github.com:Tsuyakashi/chat-backend.git
 ```bash
 npm install
 ```
-### 3. Configure .env
+### 3. Configure .env (or copy from .env.example and paste OpenAI key)
 ### 4. Run MongoDB (for example with docker)
 ```bash
 docker run -d --name my-mongo-database -p 27017:27017 mongo
 ```
 ### 5. Start with NodeJS
 ```bash
-node index.js
+npm start
 ```
 <!-- ### Also able run with `docker compose up -d` -->
-
+# .env
+```env
+OPENAI_API_KEY="sk-proj-********"
+MONGO_URI=mongodb://localhost:27017/chat
+MAX_MESSAGES_LIMIT=25
+```
 # Used:
 - NodeJS + npm:
     - express
     - dotenv
     - mongoose
+    - openai
 - Docker:
     - MongoDB
 
