@@ -1,5 +1,5 @@
 const chatService = require('./chatService');
-const openAiService = require('./openAiService');
+const openAiService = require('./openRouterService');
 const maxMessages = parseInt(process.env.MAX_MESSAGES_LIMIT) || 25;
 
 class MessageService {
@@ -15,14 +15,14 @@ class MessageService {
             ...[{ role: "user", content: message}]
         ];
         // getting response
-        const assistantMessage = await openAiService.getResponse({ messages: messagesToSend });
+        const assistantMessage = await openAiService.getResponse(messagesToSend);
         // updating messages history
         await chatService.appendMessages(chatId, [
             { role: "user", content: message },
-            assistantMessage.choices[0].message
+            assistantMessage
         ]);
         // returning only answer to users
-        return assistantMessage.choices[0].message;                
+        return assistantMessage;                
     }
 }
 
