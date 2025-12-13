@@ -9,7 +9,7 @@ chat.use(express.json());
 
 chat.use('/', require('./routes/api/chats'));
 
-const MONGO_URI = process.env.MONGO_URI
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/chat"
 
 mongoose.connect(MONGO_URI).then(() =>{
     console.log('MongoDB connected');
