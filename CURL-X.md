@@ -8,7 +8,7 @@ Show chat by id:
 ```bash
 curl -X GET \
     -H "Content-Type: application/json" \
-    localhost:3000/:id
+    localhost:3000/chats/:id
 ```
 Create chat:
 ```bash
@@ -20,12 +20,12 @@ Delete chat by id:
 ```bash
 curl -X DELETE \
     -H "Content-Type: application/json" \
-    localhost:3000/:id
+    localhost:3000/chats/:id
 ```
 Send to chat by id:
 ```bash
 curl -X POST \
     -H "Content-Type: application/json" \
     -d '{"message": "Привет! Как дела?", "userId": "User123"}' \
-    http://localhost:3000/chat/CHAT_ID/send
+    http://localhost:3000/chat/:id/send
 ```

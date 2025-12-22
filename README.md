@@ -1,5 +1,5 @@
 # Chat Backend
-### Backend web server based on NodeJS to interact with ChatGPT
+### Backend web server based on NodeJS (TypeScript) to interact with AI models via OpenRouter
 ## How to run:
 ### 1. Clone the repo:
 ```bash
@@ -9,20 +9,30 @@ git clone git@github.com:Tsuyakashi/chat-backend.git
 ```bash
 npm install
 ```
-### 3. Configure .env (or copy from .env.example and paste OpenAI key)
+### 3. Configure .env (or copy from .env.example and paste OpenRouter API key)
 ### 4. Run MongoDB (for example with docker)
 ```bash
 docker run -d --name my-mongo-database -p 27017:27017 mongo
 ```
-### 5. Start with NodeJS
+### 5. Build TypeScript
+```bash
+npm run build
+```
+
+### 6. Start with NodeJS
 ```bash
 npm start
+```
+
+### 6.1. Or run in development mode (with auto-reload)
+```bash
+npm run dev
 ```
 <!-- ### Also able run with `docker compose up -d` -->
 # .env
 ```env
-OPENAI_API_KEY="sk-proj-********"
-CHAT_GPT_MODEL='gpt-5-mini'
+OPENROUTER_API_KEY="sk-XXX"
+CHAT_MODEL='openai/gpt-3.5-turbo'
 MONGO_URI=mongodb://localhost:27017/chat
 MAX_MESSAGES_LIMIT=25
 ```
@@ -31,16 +41,19 @@ MAX_MESSAGES_LIMIT=25
     - express
     - dotenv
     - mongoose
-    - openai
+    - openai (OpenRouter API client)
+    - typescript (dev)
+    - @types/node, @types/express, @types/mongoose (dev)
+    - ts-node, nodemon (dev)
 - Docker:
     - MongoDB
 
 # Endpoints:
 - All chats `/` (GET)
 - Create chat `/chats` (POST)
-- Show chat history `/:id` (GET)
-- Delete chat `/:id` (DELETE)
-- Sent to chat `/chat/:id/send` (POST)
+- Show chat history `/chats/:id` (GET)
+- Delete chat `/chats/:id` (DELETE)
+- Send to chat `/chat/:id/send` (POST)
 
 ### For curl examples check `./CURL-X.md`
 

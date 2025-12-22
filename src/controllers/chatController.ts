@@ -1,61 +1,76 @@
-const chatService = require('../services/chatService');
-const messageService = require('../services/messageService');
+import { Response } from 'express';
+import chatService from '../services/chatService';
+import messageService from '../services/messageService';
+import { 
+    CreateChatRequest, 
+    SendMessageRequest, 
+    GetChatRequest, 
+    DeleteChatRequest 
+} from '../types/expressTypes';
 
 class ChatController {
-    async getAllChats(req, res) {
+    async getAllChats(_req: any, res: Response): Promise<void> {
         try {
             const chats = await chatService.getAllChats();
             res.json(chats);
-        } catch (err) {
+        } catch (err: any) {
             res.status(500).json({ message: 'Server error', error: err });
         }
     }
 
-    async createChat(req, res) {
+    async createChat(req: CreateChatRequest, res: Response): Promise<void> {
         try {
             const chat = await chatService.createChat(req.body);
-            res.status(201).json(chat._id);
-        } catch (err) {
+            res.status(201).json({ id: chat._id.toString() });
+        } catch (err: any) {
             res.status(400).json({ message: 'Bad request', error: err });
         }
     }
 
-    async getChatHistory(req, res){
+    async getChatHistory(req: GetChatRequest, res: Response): Promise<void> {
         try {
             const chat = await chatService.getChatHistory(req.params.id);
-            if (!chat) return res.status(404).json({ message: 'Not found' });
+            if (!chat) {
+                res.status(404).json({ message: 'Not found' });
+                return;
+            }
             res.json(chat);
-        } catch (err) {
+        } catch (err: any) {
             res.status(400).json({ message: 'Bad request', error: err });
         }
     }
 
-    async deleteChat(req, res){
+    async deleteChat(req: DeleteChatRequest, res: Response): Promise<void> {
         try {
             const result = await chatService.deleteChat(req.params.id);
-            if (result.deletedCount === 0) return res.status(404).json({ message: 'Not found'});
+            if (result.deletedCount === 0) {
+                res.status(404).json({ message: 'Not found' });
+                return;
+            }
             res.json({ message: 'Deleted successfully' });
-        } catch (err) {
+        } catch (err: any) {
             res.status(500).json({ message: 'Server error', error: err });
         }
     }
 
-    async sendToChat(req, res) {
+    async sendToChat(req: SendMessageRequest, res: Response): Promise<void> {
         try {
             const { userId, message } = req.body;
             const chatId = req.params.id;
 
             const assistantMessage = await messageService.sendMessage(chatId, userId, message);
             res.json(assistantMessage);
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error in sendToChat:', err);
             
             // Обработка разных типов ошибок
             if (err.message === 'Chat not found') {
-                return res.status(404).json({ message: err.message });
+                res.status(404).json({ message: err.message });
+                return;
             }
             if (err.message === 'Wrong user id') {
-                return res.status(403).json({ message: err.message });
+                res.status(403).json({ message: err.message });
+                return;
             }
             
             const errorResponse = {
@@ -70,4 +85,4 @@ class ChatController {
     }
 }
 
-module.exports = new ChatController
+export default new ChatController();
