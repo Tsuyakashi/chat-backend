@@ -12,7 +12,7 @@ npm install
 ### 3. Configure .env (or copy from .env.example and paste OpenRouter API key)
 ### 4. Run MongoDB (for example with docker)
 ```bash
-docker run -d --name my-mongo-database -p 27017:27017 mongo
+docker run -d --name mongo-database -p 27017:27017 mongo
 ```
 ### 5. Build TypeScript
 ```bash
