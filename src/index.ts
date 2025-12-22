@@ -3,14 +3,14 @@ dotenv.config();
 
 import express, { Express } from 'express';
 import mongoose from 'mongoose';
-import chatRoutes from './routes/api/chatRoutes';
+import { router } from './routes';
 
 const app: Express = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use('/', chatRoutes);
+app.use('/', router);
 
 const MONGO_URI: string = process.env.MONGO_URI || "mongodb://localhost:27017/chat";
 
