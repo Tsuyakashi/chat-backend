@@ -1,4 +1,4 @@
-import { Chat } from '../types/chatTypes'
+import { Chat, CreateChatDto } from '../types/chatTypes'
 
 export class ChatService {
     private chats: Chat[] = [
@@ -21,13 +21,30 @@ export class ChatService {
 
     ]
 
+    private nextId = 3;
+
     async getAllChats(): Promise<Chat[]> {
         return this.chats
     }
-    
+
     async getChatById(id: number): Promise<Chat | undefined> {
+        // add userOwnerCheck
         return this.chats.find(chat => chat.id === id)
     }
+
+    async createChat(dto: CreateChatDto): Promise<Chat> {
+        const newChat: Chat = {
+            id: this.nextId++,
+            chatOwner: dto.chatOwner,
+            messages: dto.systemPrompt
+                ? [{ role: 'system', content: dto.systemPrompt }]
+                : []
+        }
+        this.chats.push(newChat);
+        return newChat;
+
+    }
+
 }
 
 

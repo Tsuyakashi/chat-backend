@@ -8,3 +8,12 @@ export interface Chat {
     chatOwner: string;
     messages: Message[];
 }
+
+export interface GetChatByIdParams {
+    id: string
+}
+
+export interface CreateChatDto {
+    chatOwner: string;
+    systemPrompt?: string;
+}

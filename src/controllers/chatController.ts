@@ -1,27 +1,26 @@
 import { ChatService } from '../services/chatService';
 import { FastifyRequest, FastifyReply } from 'fastify';
+import { GetChatByIdParams, CreateChatDto} from '../types/chatTypes';
 
 const chatService = new ChatService
 
-interface GetChatByIdParams {
-    id: string
+
+function handleError(reply: FastifyReply, err: unknown) {
+    if (err instanceof Error) {
+        reply.status(500).send({ message: err.message })
+    } else {
+        reply.status(500).send({ message: 'Unknown error' })
+    }
 }
 
-export class ChatController {
-    private handleError(reply: FastifyReply, err: unknown) {
-        if (err instanceof Error) {
-            reply.status(500).send({ message: err.message })
-        } else {
-            reply.status(500).send({ message: 'Unknown error' })
-        }
-    }
 
+export class ChatController {
     async getAllChats(_request: FastifyRequest, reply: FastifyReply) {
         try {
             const chats = await chatService.getAllChats();
             reply.send(chats)
         } catch (err) {
-            this.handleError(reply, err)
+            handleError(reply, err)
         }
     }
 
@@ -37,7 +36,16 @@ export class ChatController {
 
             reply.send(chat);
         } catch (err) {
-            this.handleError(reply, err)
+            handleError(reply, err);
+        }
+    }
+
+    async createChat(request: FastifyRequest<{ Body: CreateChatDto }>, reply: FastifyReply) {
+        try {
+            const chat = await chatService.createChat(request.body);
+            reply.status(201).send(chat);
+        } catch (err) {
+            handleError(reply, err);
         }
     }
 }
