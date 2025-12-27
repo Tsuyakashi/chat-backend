@@ -1,14 +1,14 @@
-import express, { Router } from 'express';
-import chatController from '../../controllers/chatController';
+import { FastifyInstance } from 'fastify';
+import { ChatController } from '../../controllers/chatController';
 
-const chatRoutes: Router = express.Router();
+const chatController = new ChatController
 
-chatRoutes.get('/', chatController.getAllChats.bind(chatController));
-chatRoutes.get('/:id', chatController.getChatHistory.bind(chatController));
+export async function chatRoutes(fastify: FastifyInstance) {
+    fastify.get('/chats', chatController.getAllChats);
+    // fastify.get('/:id', chatController.getChatHistory);
 
-chatRoutes.post('/', chatController.createChat.bind(chatController));
-chatRoutes.post('/:id/send', chatController.sendToChat.bind(chatController));
+    // fastify.post('/', chatController.createChat);
+    // fastify.post('/:id/send', chatController.sendToChat);
 
-chatRoutes.delete('/:id', chatController.deleteChat.bind(chatController));
-
-export { chatRoutes };
+    // fastify.delete('/:id', chatController.deleteChat');
+}

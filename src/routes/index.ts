@@ -1,8 +1,6 @@
-import express, { Router } from 'express';
+import { FastifyInstance } from 'fastify';
 import { chatRoutes } from './api/chatRoutes';
 
-const router: Router = express.Router();
-
-router.use('/chats', chatRoutes);
-
-export { router }
+export async function registerRoutes(fastify: FastifyInstance) {
+    fastify.register(chatRoutes)
+}
