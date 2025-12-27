@@ -3,16 +3,41 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 
 const chatService = new ChatService
 
+interface GetChatByIdParams {
+    id: string
+}
+
 export class ChatController {
+    private handleError(reply: FastifyReply, err: unknown) {
+        if (err instanceof Error) {
+            reply.status(500).send({ message: err.message })
+        } else {
+            reply.status(500).send({ message: 'Unknown error' })
+        }
+    }
+
     async getAllChats(_request: FastifyRequest, reply: FastifyReply) {
         try {
             const chats = await chatService.getAllChats();
             reply.send(chats)
         } catch (err) {
-            reply.status(500).send(
-                "err",
-                // err
-            )
+            this.handleError(reply, err)
+        }
+    }
+
+    async getChatById(request: FastifyRequest<{ Params: GetChatByIdParams }>, reply: FastifyReply) {
+        try {
+            const id = Number(request.params.id);
+            const chat = await chatService.getChatById(id);
+
+            if (!chat) {
+                reply.status(404).send({ message: 'Chat not found' })
+                return
+            }
+
+            reply.send(chat);
+        } catch (err) {
+            this.handleError(reply, err)
         }
     }
 }

@@ -1,29 +1,26 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import Fastify from 'fastify';
+import { config } from './config'
 import { registerRoutes } from './routes';
 
 const fastify = Fastify({
     logger: true,
 });
 
-const PORT = 3000;
-const HOST = '0.0.0.0';
-
-
 const start = async () => {
     try {
-        await fastify.register(registerRoutes)
+        await fastify.register(registerRoutes);
 
-        fastify.listen({ port: PORT, host: HOST })
+        fastify.listen({
+            port: config.server.port,
+            host: config.server.host,
+        });
     } catch (err) {
         fastify.log.error(err)
         process.exit(1)
-    }
-}
+    };
+};
 
-start()
+start();
 
 // const MONGO_URI: string = process.env.MONGO_URI || "mongodb://localhost:27017/fastify";
 

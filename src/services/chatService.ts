@@ -24,6 +24,10 @@ export class ChatService {
     async getAllChats(): Promise<Chat[]> {
         return this.chats
     }
+    
+    async getChatById(id: number): Promise<Chat | undefined> {
+        return this.chats.find(chat => chat.id === id)
+    }
 }
 
 

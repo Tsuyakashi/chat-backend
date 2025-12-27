@@ -5,7 +5,7 @@ const chatController = new ChatController
 
 export async function chatRoutes(fastify: FastifyInstance) {
     fastify.get('/chats', chatController.getAllChats);
-    // fastify.get('/:id', chatController.getChatHistory);
+    fastify.get('/chats/:id', chatController.getChatById);
 
     // fastify.post('/', chatController.createChat);
     // fastify.post('/:id/send', chatController.sendToChat);
