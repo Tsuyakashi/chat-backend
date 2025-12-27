@@ -4,7 +4,7 @@ export class ChatService {
     private chats: Chat[] = [
         {
             id: 1,
-            chatOwner: 'SomeUser',
+            chatOwner: 'someUser',
             messages: [
                 { role: 'user', content: 'hello' },
                 { role: 'assistant', content: 'hello back' }
@@ -12,7 +12,7 @@ export class ChatService {
         },
         {
             id: 2,
-            chatOwner: 'AnotherUser',
+            chatOwner: 'anotherUser',
             messages: [
                 { role: 'user', content: 'hello' },
                 { role: 'assistant', content: 'hello back' }
@@ -27,9 +27,18 @@ export class ChatService {
         return this.chats
     }
 
-    async getChatById(id: number): Promise<Chat | undefined> {
-        // add userOwnerCheck
-        return this.chats.find(chat => chat.id === id)
+    async getChatById(id: number, userId: string): Promise<Chat | undefined> {
+        const chat = this.chats.find(chat => chat.id === id);
+
+        if (!chat) {
+            return undefined;
+        }
+
+        if (chat.chatOwner !== userId) {
+            throw new Error('Unauthorized: You do not have access to this chat');
+        } else {
+            return chat;
+        }
     }
 
     async createChat(dto: CreateChatDto): Promise<Chat> {

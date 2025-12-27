@@ -1,6 +1,6 @@
 import { ChatService } from '../services/chatService';
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { GetChatByIdParams, CreateChatDto} from '../types/chatTypes';
+import { GetChatByIdParams, CreateChatDto } from '../types/chatTypes';
 
 const chatService = new ChatService
 
@@ -24,10 +24,20 @@ export class ChatController {
         }
     }
 
-    async getChatById(request: FastifyRequest<{ Params: GetChatByIdParams }>, reply: FastifyReply) {
+    async getChatById(request: FastifyRequest<{
+        Params: GetChatByIdParams;
+        Querystring: { userId?: string }
+    }>, reply: FastifyReply) {
         try {
             const id = Number(request.params.id);
-            const chat = await chatService.getChatById(id);
+            const userId = request.query.userId;
+
+            if (!userId) {
+                reply.status(400).send({ message: 'UserId query parameter is required' });
+                return;
+            }
+
+            const chat = await chatService.getChatById(id, userId);
 
             if (!chat) {
                 reply.status(404).send({ message: 'Chat not found' })
@@ -36,6 +46,10 @@ export class ChatController {
 
             reply.send(chat);
         } catch (err) {
+            if (err instanceof Error && err.message.includes('Unauthorized')) {
+                reply.status(403).send({ message: err.message });
+                return;
+            }
             handleError(reply, err);
         }
     }
