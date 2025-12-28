@@ -4,9 +4,9 @@ import { secrets } from '../config/secret'
 import { Message } from '../types/chatTypes';
 
 const openai = new OpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: secrets.openRouter.apiKey,
-  defaultHeaders: {},
+    baseURL: 'https://openrouter.ai/api/v1',
+    apiKey: secrets.openRouter.apiKey,
+    defaultHeaders: {},
 });
 
 export async function getResponse(promptChain: Message[]): Promise<Message> {

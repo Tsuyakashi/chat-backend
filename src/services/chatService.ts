@@ -43,7 +43,7 @@ export class ChatService {
     }
 
     async createChat(dto: CreateChatDto): Promise<Chat> {
-        if (!dto.chatOwner){
+        if (!dto.chatOwner) {
             throw new Error('User is required');
         }
         const newChat: Chat = {
@@ -69,7 +69,7 @@ export class ChatService {
             throw new Error('Unauthorized: You do not have access to this chat');
         }
 
-        if (!message){
+        if (!message) {
             throw new Error('Message is required');
         }
 
@@ -84,42 +84,3 @@ export class ChatService {
     }
 
 }
-
-
-
-// class ChatService implements IChatService {
-//     async getAllChats(): Promise<IChatDocument[]> {
-//         return ChatModel.find().sort({ createdAt: -1 }).exec();
-//     }
-
-//     async createChat(data: ICreateChatData): Promise<IChatDocument> {
-//         return ChatModel.create(data);
-//     }
-
-//     async getChatHistory(id: string): Promise<IChatDocument | null> {
-//         if (!Types.ObjectId.isValid(id)) {
-//             return null;
-//         }
-//         return ChatModel.findById(id).exec();
-//     }
-
-//     async deleteChat(id: string): Promise<IDeleteResult> {
-//         if (!Types.ObjectId.isValid(id)) {
-//             return { deletedCount: 0, acknowledged: true };
-//         }
-//         return ChatModel.deleteOne({ _id: new Types.ObjectId(id) }).exec();
-//     }
-
-//     async appendMessages(id: string, data: IMessage[]): Promise<IChatDocument | null> {
-//         if (!Types.ObjectId.isValid(id)) {
-//             return null;
-//         }
-//         return ChatModel.findByIdAndUpdate(
-//             id,
-//             { $push: { messages: { $each: data } } },
-//             { new: true }
-//         ).exec();
-//     }
-// }
-
-// export default new ChatService();
