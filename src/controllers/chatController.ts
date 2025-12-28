@@ -1,6 +1,6 @@
 import { ChatService } from '../services/chatService';
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { GetChatByIdParams, CreateChatDto } from '../types/chatTypes';
+import { GetChatByIdParams, CreateChatDto, Message } from '../types/chatTypes';
 
 const chatService = new ChatService
 
@@ -26,7 +26,7 @@ export class ChatController {
 
     async getChatById(request: FastifyRequest<{
         Params: GetChatByIdParams;
-        Querystring: { userId?: string }
+        Querystring: { userId?: string };
     }>, reply: FastifyReply) {
         try {
             const id = Number(request.params.id);
@@ -59,6 +59,36 @@ export class ChatController {
             const chat = await chatService.createChat(request.body);
             reply.status(201).send(chat);
         } catch (err) {
+            handleError(reply, err);
+        }
+    }
+
+    async sendToChat(request: FastifyRequest<{
+        Params: GetChatByIdParams;
+        Body: { userId: string, message: Message };
+    }>, reply: FastifyReply) {
+        try {
+            const assistantMessage = await chatService.sendToChat(
+                Number(request.params.id),
+                request.body.userId,
+                request.body.message,
+            );
+            reply.status(200).send(assistantMessage);
+        } catch (err) {
+            if (err instanceof Error) {
+                if (err.message.includes('Unauthorized')) {
+                    reply.status(403).send({ message: err.message });
+                    return;
+                }
+                if (err.message.includes('Chat not found')) {
+                    reply.status(404).send({ message: err.message });
+                    return;
+                }
+                if (err.message.includes('Invalid message') || err.message.includes('Message is required')) {
+                    reply.status(400).send({ message: err.message });
+                    return;
+                }
+            }
             handleError(reply, err);
         }
     }

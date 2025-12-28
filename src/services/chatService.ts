@@ -1,4 +1,5 @@
-import { Chat, CreateChatDto } from '../types/chatTypes'
+import { Chat, CreateChatDto, Message } from '../types/chatTypes'
+import { getResponse } from './openRouterService';
 
 export class ChatService {
     private chats: Chat[] = [
@@ -42,6 +43,9 @@ export class ChatService {
     }
 
     async createChat(dto: CreateChatDto): Promise<Chat> {
+        if (!dto.chatOwner){
+            throw new Error('User is required');
+        }
         const newChat: Chat = {
             id: this.nextId++,
             chatOwner: dto.chatOwner,
@@ -51,6 +55,31 @@ export class ChatService {
         }
         this.chats.push(newChat);
         return newChat;
+
+    }
+
+    async sendToChat(id: number, userId: string, message: Message): Promise<Message> {
+        const chat = this.chats.find(chat => chat.id === id);
+
+        if (!chat) {
+            throw new Error('Chat not found')
+        }
+
+        if (chat.chatOwner !== userId) {
+            throw new Error('Unauthorized: You do not have access to this chat');
+        }
+
+        if (!message){
+            throw new Error('Message is required');
+        }
+
+        chat.messages.push(message);
+
+        const newMessage = await getResponse(chat.messages);
+
+        chat.messages.push(newMessage);
+
+        return newMessage;
 
     }
 
