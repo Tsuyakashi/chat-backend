@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import Fastify from 'fastify';
-import mongoose from 'mongoose';
+import { DatabaseService } from './services/databaseService';
 import { config } from './config'
 import { registerRoutes } from './routes';
 
@@ -8,21 +8,13 @@ const fastify = Fastify({
     logger: true,
 });
 
-async function connectDatabase(): Promise<void> {
-    const MONGO_URI = config.database.uri;
-
-    try {
-        await mongoose.connect(MONGO_URI);
-        console.log('MongoDB connected successfully');
-    } catch (error) {
-        console.error('MongoDB connection error:', error);
-        throw error;
-    }
-}
+const databaseService = new DatabaseService
 
 const start = async () => {
     try {
-        await connectDatabase();
+        databaseService.connect().catch((err) => {
+            fastify.log.error('Database connection failed:', err);
+        });
 
         await fastify.register(registerRoutes);
 
