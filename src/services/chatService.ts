@@ -28,6 +28,10 @@ export class ChatService {
             throw new Error('User is required');
         }
 
+        if (dto.systemPrompt && dto.systemPrompt.length > config.chat.maxMessagesLength) {
+            throw new Error(`System prompt exceeds maximum length of ${config.chat.maxMessagesLength} characters`);
+        }
+
         const newChat = new ChatModel({
             userId: dto.userId,
             messages: dto.systemPrompt
@@ -95,6 +99,10 @@ export class ChatService {
 
         if (!userMessage) {
             throw new Error('Message is required');
+        }
+
+        if (userMessage.length > config.chat.maxMessagesLength) { 
+            throw new Error(`Message exceeds maximum length of ${config.chat.maxMessagesLength} characters`);
         }
 
         chat.messages.push({
