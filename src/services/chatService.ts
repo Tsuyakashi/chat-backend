@@ -102,4 +102,15 @@ export class ChatService {
 
     }
 
+    async deleteChat(id: number) {
+        const chatIndex = this.chats.findIndex(chat => chat.id === id);
+
+        if (chatIndex === -1) {
+            throw new Error('Chat not found')
+        }
+
+        this.chats.splice(chatIndex, 1)
+        return { message: 'Chat deleted successfully' }
+    }
+
 }

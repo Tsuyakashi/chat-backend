@@ -92,4 +92,19 @@ export class ChatController {
             handleError(reply, err);
         }
     }
+
+    async deleteChat(request: FastifyRequest<{ Params: GetChatByIdParams }>, reply: FastifyReply) {
+        try {
+            const id = Number(request.params.id);
+
+            const result = await chatService.deleteChat(id)
+            reply.status(200).send(result);
+        } catch (err) {
+            if (err instanceof Error && err.message.includes('Chat not found')) {
+                reply.status(404).send({ message: err.message });
+                return
+            }
+            handleError(reply, err);
+        }
+    }
 }
