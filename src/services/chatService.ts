@@ -1,5 +1,6 @@
 import { Chat, CreateChatDto, Message } from '../types/chatTypes'
 import { getResponse } from './openRouterService';
+import { config } from '../config';
 
 export class ChatService {
     private chats: Chat[] = [
@@ -58,6 +59,23 @@ export class ChatService {
 
     }
 
+    private limitMessages(messages: Message[]): Message[] {
+        if (messages.length <= config.chat.maxMessagesLimit) {
+            return messages;
+        }
+
+        const systemMessage = messages.find(msg => msg.role === 'system');
+        const nonSystemMessages = messages.filter(msg => msg.role !== 'system');
+
+        if (nonSystemMessages.length === 0) {
+            throw new Error('Chat must contain at least one non-system message');
+        }
+
+        return systemMessage
+            ? [systemMessage, ...nonSystemMessages.slice(-(config.chat.maxMessagesLimit - 1))]
+            : nonSystemMessages.slice(-config.chat.maxMessagesLimit);
+    }
+
     async sendToChat(id: number, userId: string, message: Message): Promise<Message> {
         const chat = this.chats.find(chat => chat.id === id);
 
@@ -75,7 +93,8 @@ export class ChatService {
 
         chat.messages.push(message);
 
-        const newMessage = await getResponse(chat.messages);
+        const limitedMesasages = this.limitMessages(chat.messages)
+        const newMessage = await getResponse(limitedMesasages);
 
         chat.messages.push(newMessage);
 
