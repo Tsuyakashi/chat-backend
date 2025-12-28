@@ -64,13 +64,13 @@ server: {
     - MongoDB
 
 # Endpoints:
-- All chats `/chats/` (GET)
-- Show chat history `/chats/:id` (GET)
+- All chats `/chats/?userId=xxx` (GET) - требует обязательный query параметр userId
+- Show chat history `/chats/:id?userId=xxx` (GET) - требует обязательный query параметр userId
 ---
 - Create chat `/chats` (POST)
 - Send to chat `/chats/send/:id` (POST)
 ---
-- Delete chat `/chats/:id` (DELETE)
+- Delete chat `/chats/:id?userId=xxx` (DELETE) - требует обязательный query параметр userId
 
 ### For curl examples check `./CURL.md`
 

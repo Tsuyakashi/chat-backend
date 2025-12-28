@@ -4,21 +4,27 @@ import { config } from '../config';
 import { ChatModel } from '../models/chats';
 
 export class ChatService {
-    async getAllChats(): Promise<Chat[]> {
+    async getAllChats(userId: string): Promise<Chat[]> {
         const chats = await ChatModel.find().exec();
-        return chats.map(chat => this.toChat(chat));
+
+        if (userId === 'admin') {
+            return chats.map(chat => this.toChat(chat));
+        }
+        
+        const userChats = chats.filter(chat => chat.userId === userId);
+        return userChats.map(chat => this.toChat(chat));
     }
 
     async getChatById(id: string, userId: string): Promise<Chat | undefined> {
         const chat = await ChatModel.findById(id).exec();
 
-        if (!chat) {
+        if (!chat || chat.userId !== userId) {
             return undefined;
         }
 
-        if (chat.userId !== userId) {
-            throw new Error('Unauthorized: You do not have access to this chat');
-        }
+        // if (chat.userId !== userId) {
+        //     throw new Error('Unauthorized: You do not have access to this chat');
+        // }
 
         return this.toChat(chat);
     }
@@ -89,13 +95,13 @@ export class ChatService {
     private async executeSendToChat(id: string, userId: string, userMessage: string): Promise<Message> {
         const chat = await ChatModel.findById(id).exec();
 
-        if (!chat) {
+        if (!chat || chat.userId !== userId) {
             throw new Error('Chat not found');
         }
 
-        if (chat.userId !== userId) {
-            throw new Error('Unauthorized: You do not have access to this chat');
-        }
+        // if (chat.userId !== userId) {
+        //     throw new Error('Unauthorized: You do not have access to this chat');
+        // }
 
         if (!userMessage) {
             throw new Error('Message is required');
@@ -119,12 +125,14 @@ export class ChatService {
         return assistantMessage;
     }
 
-    async deleteChat(id: string) {
-        const result = await ChatModel.findByIdAndDelete(id).exec();
+    async deleteChat(id: string, userId: string) {
+        const chat = await ChatModel.findById(id).exec();
 
-        if (!result) {
-            throw new Error('Chat not found');
+        if (!chat || chat.userId !== userId) {
+            throw new Error('Chat not found'); // not found or unauthorized
         }
+
+        await ChatModel.findByIdAndDelete(id).exec();
 
         return { message: 'Chat deleted successfully' };
     }

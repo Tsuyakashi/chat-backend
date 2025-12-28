@@ -15,9 +15,9 @@ function handleError(reply: FastifyReply, err: unknown) {
 
 
 export class ChatController {
-    async getAllChats(_request: FastifyRequest, reply: FastifyReply) {
+    async getAllChats(request: FastifyRequest<{Querystring: { userId: string }}>, reply: FastifyReply) {
         try {
-            const chats = await chatService.getAllChats();
+            const chats = await chatService.getAllChats(request.query.userId);
             reply.send(chats);
         } catch (err) {
             handleError(reply, err);
@@ -26,16 +26,16 @@ export class ChatController {
 
     async getChatById(request: FastifyRequest<{
         Params: GetChatByIdParams;
-        Querystring: { userId?: string };
+        Querystring: { userId: string };
     }>, reply: FastifyReply) {
         try {
             const id = request.params.id;
             const userId = request.query.userId;
 
-            if (!userId) {
-                reply.status(400).send({ message: 'UserId query parameter is required' });
-                return;
-            }
+            // if (!userId) {
+            //     reply.status(400).send({ message: 'userId parameter is required' });
+            //     return;
+            // }
 
             const chat = await chatService.getChatById(id, userId);
 
@@ -46,10 +46,10 @@ export class ChatController {
 
             reply.send(chat);
         } catch (err) {
-            if (err instanceof Error && err.message.includes('Unauthorized')) {
-                reply.status(403).send({ message: err.message });
-                return;
-            }
+            // if (err instanceof Error && err.message.includes('Unauthorized')) {
+            //     reply.status(403).send({ message: err.message });
+            //     return;
+            // }
             handleError(reply, err);
         }
     }
@@ -76,10 +76,10 @@ export class ChatController {
             reply.status(200).send(assistantMessage);
         } catch (err) {
             if (err instanceof Error) {
-                if (err.message.includes('Unauthorized')) {
-                    reply.status(403).send({ message: err.message });
-                    return;
-                }
+                // if (err.message.includes('Unauthorized')) {
+                //     reply.status(403).send({ message: err.message });
+                //     return;
+                // }
                 if (err.message.includes('Chat not found')) {
                     reply.status(404).send({ message: err.message });
                     return;
@@ -93,11 +93,14 @@ export class ChatController {
         }
     }
 
-    async deleteChat(request: FastifyRequest<{ Params: GetChatByIdParams }>, reply: FastifyReply) {
+    async deleteChat(request: FastifyRequest<{ 
+        Params: GetChatByIdParams, 
+        Querystring: { userId: string},
+    }>, reply: FastifyReply) {
         try {
             const id = request.params.id;
 
-            const result = await chatService.deleteChat(id);
+            const result = await chatService.deleteChat(id, request.query.userId);
             reply.status(200).send(result);
         } catch (err) {
             if (err instanceof Error && err.message.includes('Chat not found')) {

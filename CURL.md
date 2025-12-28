@@ -6,10 +6,15 @@
 
 ## 1. Получить все чаты
 
-**GET** `/chats`
+**GET** `/chats?userId=xxx`
+
+**Параметры:**
+- `userId` - ID пользователя (query параметр, обязательный)
+  - Если `userId=admin`, возвращаются все чаты
+  - Иначе возвращаются только чаты указанного пользователя
 
 ```bash
-curl -X GET http://localhost:3000/chats
+curl -X GET "http://localhost:3000/chats?userId=testUser"
 ```
 
 **Ответ:**
@@ -39,6 +44,9 @@ curl -X GET http://localhost:3000/chats
 ]
 ```
 
+**Ошибки:**
+- `400` - отсутствует userId: `{"message": "userId parameter is required"}`
+
 ---
 
 ## 2. Получить чат по ID
@@ -63,9 +71,8 @@ curl -X GET "http://localhost:3000/chats/69518ed07df147966a6fb4de?userId=testUse
 ```
 
 **Ошибки:**
-- `400` - отсутствует userId: `{"message": "UserId query parameter is required"}`
-- `403` - нет доступа: `{"message": "Unauthorized: You do not have access to this chat"}`
-- `404` - чат не найден: `{"message": "Chat not found"}`
+- `400` - отсутствует userId: `{"message": "userId parameter is required"}`
+- `404` - чат не найден или нет доступа: `{"message": "Chat not found"}`
 
 ---
 
@@ -158,20 +165,20 @@ curl -X POST http://localhost:3000/chats/send/69518ed07df147966a6fb4de \
 
 **Ошибки:**
 - `400` - отсутствует или пустое сообщение: `{"message": "Message is required"}` или `{"message": "Invalid message"}`
-- `403` - нет доступа: `{"message": "Unauthorized: You do not have access to this chat"}`
-- `404` - чат не найден: `{"message": "Chat not found"}`
+- `404` - чат не найден или нет доступа: `{"message": "Chat not found"}`
 
 ---
 
 ## 5. Удалить чат
 
-**DELETE** `/chats/:id`
+**DELETE** `/chats/:id?userId=xxx`
 
 **Параметры:**
 - `:id` - ID чата (в URL)
+- `userId` - ID пользователя (query параметр, обязательный)
 
 ```bash
-curl -X DELETE http://localhost:3000/chats/69518ed07df147966a6fb4de
+curl -X DELETE "http://localhost:3000/chats/69518ed07df147966a6fb4de?userId=testUser"
 ```
 
 **Ответ (200):**
@@ -182,7 +189,8 @@ curl -X DELETE http://localhost:3000/chats/69518ed07df147966a6fb4de
 ```
 
 **Ошибки:**
-- `404` - чат не найден: `{"message": "Chat not found"}`
+- `400` - отсутствует userId: `{"message": "userId parameter is required"}`
+- `404` - чат не найден или нет доступа: `{"message": "Chat not found"}`
 
 ---
 
