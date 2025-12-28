@@ -9,7 +9,7 @@ export const sendToChatSchema = {
     body: {
         type: 'object',
         properties: {
-            userid: { type: 'string' },
+            userId: { type: 'string' },
             message: {
                 type: 'object',
                 properties: {
