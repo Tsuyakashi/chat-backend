@@ -1,12 +1,12 @@
-import { Chat, CreateChatDto, Message } from '../types/chatTypes'
+import { Chat, CreateChatDto, Message } from '../types/chatTypes';
 import { getResponse } from './openRouterService';
 import { config } from '../config';
-import { ChatModel } from '../models/chats'
+import { ChatModel } from '../models/chats';
 
 export class ChatService {
     async getAllChats(): Promise<Chat[]> {
         const chats = await ChatModel.find().exec();
-        return chats.map(chat => this.toChat(chat))
+        return chats.map(chat => this.toChat(chat));
     }
 
     async getChatById(id: string, userId: string): Promise<Chat | undefined> {
@@ -33,7 +33,7 @@ export class ChatService {
             messages: dto.systemPrompt
                 ? [{ role: 'system', content: dto.systemPrompt }]
                 : []
-        })
+        });
 
         const savedChat = await newChat.save();
         return this.toChat(savedChat);
@@ -89,17 +89,17 @@ export class ChatService {
         const result = await ChatModel.findByIdAndDelete(id).exec();
 
         if (!result) {
-            throw new Error('Chat not found')
+            throw new Error('Chat not found');
         }
 
-        return { message: 'Chat deleted successfully' }
+        return { message: 'Chat deleted successfully' };
     }
 
     private toChat(chat: any): Chat {
         return {
             id: chat._id.toString(),
             userId: chat.userId,
-            messages: chat.messages
+            messages: chat.messages,
         };
     }
 }

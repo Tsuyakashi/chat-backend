@@ -11,7 +11,7 @@ export interface Chat {
 }
 
 export interface GetChatByIdParams {
-    id: string
+    id: string;
 }
 
 export interface CreateChatDto {

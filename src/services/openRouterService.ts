@@ -1,6 +1,6 @@
-import OpenAI from 'openai'
+import OpenAI from 'openai';
 import { config } from '../config';
-import { secrets } from '../config/secret'
+import { secrets } from '../config/secret';
 import { Message } from '../types/chatTypes';
 
 const openai = new OpenAI({
@@ -15,14 +15,14 @@ export async function getResponse(promptChain: Message[]): Promise<Message> {
         messages: promptChain,
     });
 
-    const message = completion.choices[0]?.message
+    const message = completion.choices[0]?.message;
 
     if (!message) {
         throw new Error('No message in completion response');
     }
 
     if (!message.content) {
-        throw new Error('Message content is empty')
+        throw new Error('Message content is empty');
     }
 
     return {

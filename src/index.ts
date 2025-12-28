@@ -1,4 +1,4 @@
-import 'dotenv/config'
+import 'dotenv/config';
 import Fastify from 'fastify';
 import mongoose from 'mongoose';
 import { config } from './config'
@@ -31,8 +31,8 @@ const start = async () => {
             host: config.server.host,
         });
     } catch (err) {
-        fastify.log.error(err)
-        process.exit(1)
+        fastify.log.error(err);
+        process.exit(1);
     };
 };
 
