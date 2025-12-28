@@ -27,6 +27,7 @@ export async function getResponse(promptChain: Message[]): Promise<Message> {
 
     return {
         role: 'assistant',
-        content: message.content
+        content: message.content,
+        sentAt: new Date(),
     };
 }

@@ -1,11 +1,12 @@
 export interface Message {
     role: 'system' | 'assistant' | 'user';
     content: string;
+    sentAt: Date;
 }
 
 export interface Chat {
-    id: number;
-    chatOwner: string;
+    id: string;
+    userId: string; // chat owner id
     messages: Message[];
 }
 
@@ -14,6 +15,6 @@ export interface GetChatByIdParams {
 }
 
 export interface CreateChatDto {
-    chatOwner: string;
+    userId: string; // chat owner id
     systemPrompt?: string;
 }

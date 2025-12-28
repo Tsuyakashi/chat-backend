@@ -1,6 +1,6 @@
 import { ChatService } from '../services/chatService';
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { GetChatByIdParams, CreateChatDto, Message } from '../types/chatTypes';
+import { GetChatByIdParams, CreateChatDto } from '../types/chatTypes';
 
 const chatService = new ChatService
 
@@ -29,7 +29,7 @@ export class ChatController {
         Querystring: { userId?: string };
     }>, reply: FastifyReply) {
         try {
-            const id = Number(request.params.id);
+            const id = request.params.id;
             const userId = request.query.userId;
 
             if (!userId) {
@@ -65,11 +65,11 @@ export class ChatController {
 
     async sendToChat(request: FastifyRequest<{
         Params: GetChatByIdParams;
-        Body: { userId: string, message: Message };
+        Body: { userId: string, message: string };
     }>, reply: FastifyReply) {
         try {
             const assistantMessage = await chatService.sendToChat(
-                Number(request.params.id),
+                request.params.id,
                 request.body.userId,
                 request.body.message,
             );
@@ -95,7 +95,7 @@ export class ChatController {
 
     async deleteChat(request: FastifyRequest<{ Params: GetChatByIdParams }>, reply: FastifyReply) {
         try {
-            const id = Number(request.params.id);
+            const id = request.params.id;
 
             const result = await chatService.deleteChat(id)
             reply.status(200).send(result);

@@ -7,6 +7,9 @@ export const config = {
         model: 'openai/gpt-3.5-turbo',
         maxMessagesLimit: 25
     },
+    database: {
+        uri: process.env.MONGO_URI || 'mongodb://localhost:27017/chat-backend',
+    },
 } as const
 
 export type Config = typeof config;

@@ -10,14 +10,7 @@ export const sendToChatSchema = {
         type: 'object',
         properties: {
             userId: { type: 'string' },
-            message: {
-                type: 'object',
-                properties: {
-                    role: { type: 'string', enum: ['system', 'assistant', 'user'] },
-                    content: { type: 'string' }
-                },
-                required: ['role', 'content']
-            }
+            message: { type: 'string' }
         },
         required: ['userId', 'message']
     }

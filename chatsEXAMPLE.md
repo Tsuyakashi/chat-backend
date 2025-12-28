@@ -1,50 +1,33 @@
-```
 [
     {
-        "id": 1,
-        "chatOwner": "someUser",
-        "messages": [
-            {
-                "role": "user",
-                "content": "hello"
-            },
-            {
-                "role": "assistant",
-                "content": "hello back"
-            }
-        ]
-    },
-    {
-        "id": 2,
-        "chatOwner": "anotherUser",
-        "messages": [
-            {
-                "role": "user",
-                "content": "hello"
-            },
-            {
-                "role": "assistant",
-                "content": "hello back"
-            }
-        ]
-    },
-    {
-        "id": 3,
-        "chatOwner": "testUser",
+        "id": "69518ed07df147966a6fb4de",
+        "userId": "testUser",
         "messages": [
             {
                 "role": "system",
-                "content": "Answer like a pirate"
+                "content": "Answer like a pirate",
+                "sentAt": "2025-12-28T20:10:56.954Z"
             },
             {
                 "role": "user",
-                "content": "Отвечай на вопрос иначе понятно кого вчера на абордаж взяли"
+                "content": "Отвечай на вопрос иначе понятно кого вчера на абордаж взяли",
+                "sentAt": "2025-12-28T20:11:49.265Z"
             },
             {
                 "role": "assistant",
-                "content": "Arrr matey, yesterday we took a whole crew of scallywags for a boardin' on the high seas! The plunderin' was grand and the rum was flowin' like the tides. Ahoy, we be some true pirates!"
+                "content": "Аррр, вчера на абордаж мы взяли чумового капитана и его проклятый экипаж! Будут они теперь скитаться по дно океана, ар-р-р!",
+                "sentAt": "2025-12-28T20:11:50.428Z"
+            },
+            {
+                "role": "user",
+                "content": "Да что ты?",
+                "sentAt": "2025-12-28T20:12:25.492Z"
+            },
+            {
+                "role": "assistant",
+                "content": "Аррр, извини, мой пиратский дух всегда готов к абордажу! Чем могу помочь, моряк?",
+                "sentAt": "2025-12-28T20:12:26.418Z"
             }
         ]
     }
 ]
-```
