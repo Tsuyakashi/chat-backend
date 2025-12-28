@@ -61,7 +61,28 @@ export class ChatService {
             : nonSystemMessages.slice(-config.chat.maxMessagesLimit);
     }
 
+    private activeRequests = new Map<string, Promise<Message>>();
+
     async sendToChat(id: string, userId: string, userMessage: string): Promise<Message> {
+        const existingRequest = this.activeRequests.get(id);
+
+        if (existingRequest) {
+            await existingRequest;
+        }
+
+        const requestPromise = this.executeSendToChat(id, userId, userMessage);
+
+        this.activeRequests.set(id, requestPromise);
+
+        try {
+            const result = await requestPromise;
+            return result;
+        } finally {
+            this.activeRequests.delete(id);
+        }
+    }
+
+    private async executeSendToChat(id: string, userId: string, userMessage: string): Promise<Message> {
         const chat = await ChatModel.findById(id).exec();
 
         if (!chat) {
