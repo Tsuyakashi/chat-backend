@@ -8,6 +8,7 @@ export interface Chat {
     id: string;
     userId: string; // chat owner id
     messages: Message[];
+    systemPrompt?: string;
 }
 
 export interface GetChatByIdParams {

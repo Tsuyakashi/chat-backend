@@ -39,6 +39,11 @@ export class ChatService {
         return this.toChat(savedChat);
     }
 
+    private extractSystemPrompt(messages: Message[]): string | undefined {
+        const systemMessage = messages.find(msg => msg.role === 'system');
+        return systemMessage?.content
+    }
+
     private limitMessages(messages: Message[]): Message[] {
         if (messages.length <= config.chat.maxMessagesLimit) {
             return messages;
@@ -100,6 +105,7 @@ export class ChatService {
             id: chat._id.toString(),
             userId: chat.userId,
             messages: chat.messages,
+            systemPrompt: this.extractSystemPrompt(chat.messages)
         };
     }
 }
