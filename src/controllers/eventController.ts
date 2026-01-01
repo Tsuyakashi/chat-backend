@@ -2,7 +2,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { EventService } from '../services/eventService';
 import { Event } from '../types/eventTypes';
 
-const eventService = new EventService
+const eventService = new EventService();
 
 export class EventController {
     async health (_request: FastifyRequest, reply: FastifyReply) {

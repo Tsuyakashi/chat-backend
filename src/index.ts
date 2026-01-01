@@ -8,12 +8,15 @@ const fastify = Fastify({
     logger: true,
 });
 
-const databaseService = new DatabaseService
+const databaseService = new DatabaseService();
 
 const start = async () => {
     try {
-        databaseService.connect().catch((err) => {
-            fastify.log.error('Database connection failed:', err);
+        databaseService.initPostgres().catch((err) => {
+            fastify.log.warn('PostgreSQL initialization failed:', err);
+        });
+        databaseService.connectMongo().catch((err) => {
+            fastify.log.warn('MongoDB connection failed:', err);
         });
 
         await fastify.register(registerRoutes);

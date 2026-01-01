@@ -17,16 +17,23 @@ cp .env.example .env
 ```bash
 docker run -d --name mongo-database -p 27017:27017 mongo
 ```
-### 5. Build TypeScript
+### 5. Run PostgreSQL (for example with dokcer)
+```bash
+docker run --name postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
+```
+### 5.1 Create DB 
+```bash
+docker exec -it postgres psql -U postgres -c "CREATE DATABASE events;"
+```
+### 6. Build TypeScript
 ```bash
 npm run build
 ```
-### 6. Start with NodeJS
+### 7. Start with NodeJS
 ```bash
 npm start
 ```
-
-### 6.1. Or run in development mode (with auto-reload)
+### 7.1. Or run in development mode (with auto-reload)
 ```bash
 npm run dev
 ```
