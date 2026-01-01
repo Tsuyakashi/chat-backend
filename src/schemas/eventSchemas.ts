@@ -21,7 +21,7 @@ export const eventSchema = {
                             chance: { type: 'number' },
                             description: { type: 'string' }
                         },
-                        required: ['id', 'title', 'chance', 'description']
+                        required: ['id', 'title', 'description']
                     },
                     minItems: 1,
                 },

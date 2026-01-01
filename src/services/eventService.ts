@@ -8,13 +8,6 @@ const databaseService = new DatabaseService();
 
 export class EventService {
     private async eventSummary(event: Event): Promise<string> {
-
-        const description = event.description;
-
-        if (!description) {
-            throw new Error('Description cannot be empty');
-        }
-
         try {
             const dbEvent = await databaseService.query(
                 'SELECT id, summary, created_at, updated_at FROM events WHERE id = $1',
@@ -27,6 +20,33 @@ export class EventService {
             console.warn('⚠️  Database query error:', err.message);
         }
 
+        // Собираем уникальные descriptions из markets (убираем дубликаты)
+        const marketsDescriptions = event.markets
+            ?.map((market, index) => `${index + 1}. ${market.description}`)
+            .join('\n\n') || '';
+
+        // Проверяем, не дублируется ли event.description с единственным market.description
+        const isSingleMarketDuplicate = event.markets?.length === 1 && 
+            event.description === event.markets[0].description;
+
+        let context = '';
+        
+        // Добавляем event.description только если он не дублирует market.description
+        if (event.description && !isSingleMarketDuplicate) {
+            context += `Event description: ${event.description}`;
+        }
+        
+        // Добавляем markets descriptions
+        if (marketsDescriptions) {
+            if (context) context += '\n\n';
+            context += `Markets descriptions:\n${marketsDescriptions}`;
+        }
+
+        // Финальная проверка
+        if (!context.trim()) {
+            throw new Error('Event must have either description or markets with descriptions');
+        }
+
         const promptChain: Message[] = [
             {
                 role: 'system',
@@ -35,7 +55,7 @@ export class EventService {
             },
             {
                 role: 'user',
-                content: `Event description: ${description}`,
+                content: context,
                 sentAt: new Date(),
             },
         ];
