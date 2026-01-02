@@ -1,14 +1,12 @@
 import 'dotenv/config';
 import Fastify from 'fastify';
-import { DatabaseService } from './services/databaseService';
+import { databaseService } from './services/databaseService';
 import { config } from './config'
 import { registerRoutes } from './routes';
 
 const fastify = Fastify({
     logger: true,
 });
-
-const databaseService = new DatabaseService();
 
 const start = async () => {
     try {

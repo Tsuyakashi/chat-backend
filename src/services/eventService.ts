@@ -2,9 +2,7 @@ import { getResponse } from './openRouterService';
 import { Message } from '../types/chatTypes';
 import { Event } from '../types/eventTypes';
 import { config } from '../config';
-import { DatabaseService } from './databaseService';
-
-const databaseService = new DatabaseService();
+import { databaseService } from './databaseService';
 
 export class EventService {
     private async eventSummary(event: Event): Promise<string> {
@@ -26,16 +24,16 @@ export class EventService {
             .join('\n\n') || '';
 
         // Проверяем, не дублируется ли event.description с единственным market.description
-        const isSingleMarketDuplicate = event.markets?.length === 1 && 
+        const isSingleMarketDuplicate = event.markets?.length === 1 &&
             event.description === event.markets[0].description;
 
         let context = '';
-        
+
         // Добавляем event.description только если он не дублирует market.description
         if (event.description && !isSingleMarketDuplicate) {
             context += `Event description: ${event.description}`;
         }
-        
+
         // Добавляем markets descriptions
         if (marketsDescriptions) {
             if (context) context += '\n\n';

@@ -12,7 +12,7 @@ const pool: Pool = new Pool({
 })
 
 
-export class DatabaseService {
+class DatabaseService {
     private MONGO_URI = config.database.mongoUri;
     private isConnectedMongo = false;
 
@@ -86,11 +86,45 @@ export class DatabaseService {
                 updated_at TIMESTAMP DEFAULT NOW()
                 );`
             );
+
+            await this.query(
+                `CREATE TABLE IF NOT EXISTS api_keys (
+                api_key UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                created_at TIMESTAMP DEFAULT NOW()
+                );`
+            );
+
             console.log('PostgreSQL initialized successfully');
         } catch (err) {
             console.error('Postgres initialization error:', err);
         }
     }
+
+    async validateApiKey(apiKey: string): Promise<boolean> {
+        try {
+            const result = await this.query(
+                `SELECT 1 FROM api_keys WHERE api_key = $1`,
+                [apiKey]
+            );
+            return result.rows.length > 0;
+        } catch (err) {
+            console.error('API key validation error:', err);
+            return false;
+        }
+    }
+
+    async createApiKey(): Promise<string> {
+        try {
+            const result = await this.query(
+                `INSERT INTO api_keys (api_key) VALUES (gen_random_uuid()) RETURNING api_key`,
+                []
+            );
+            return result.rows[0].api_key;
+        } catch (err) {
+            console.error('API key creation error:', err);
+            throw err;
+        }
+    }
 }
 
-
+export const databaseService = new DatabaseService();
